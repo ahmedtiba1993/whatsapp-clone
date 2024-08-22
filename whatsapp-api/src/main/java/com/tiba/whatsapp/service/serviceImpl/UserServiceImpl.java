@@ -5,10 +5,12 @@ import com.tiba.whatsapp.dto.UserResponse;
 import com.tiba.whatsapp.mapper.UserMapper;
 import com.tiba.whatsapp.model.User;
 import com.tiba.whatsapp.repository.UserRepository;
+import com.tiba.whatsapp.service.ChatService;
 import com.tiba.whatsapp.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,6 +19,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final ChatService chatService;
 
     @Override
     public UserResponse login(UserRequest userRequest) {
@@ -30,12 +33,13 @@ public class UserServiceImpl implements UserService {
             userResponse.setFirstName(existingUser.get().getFirstName());
             userResponse.setLastName(existingUser.get().getLastName());
             userResponse.setUsername(existingUser.get().getUserName());
+            userResponse.setChatResponses(chatService.findAllByUserId(existingUser.get().getId()));
             return userResponse;
 
         }else{
 
             User userSaved = userRepository.save(User.builder().userName(userRequest.userName()).build());
-            return userMapper.toUserResponse(userSaved);
+            return userMapper.toUserResponse(userSaved, List.of());
 
         }
     }

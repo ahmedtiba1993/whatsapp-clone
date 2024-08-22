@@ -18,14 +18,15 @@ public class Chat {
     @Id
     @GeneratedValue
     private Long id;
+    private String chatName;
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
-    private User sender;
+    private User user1;
 
     @ManyToOne
     @JoinColumn(name = "receiver_id", nullable = false)
-    private User receiver;
+    private User user2;
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Message> messages;
