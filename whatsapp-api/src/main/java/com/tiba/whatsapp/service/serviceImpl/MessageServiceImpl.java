@@ -1,6 +1,8 @@
 package com.tiba.whatsapp.service.serviceImpl;
 
 import com.tiba.whatsapp.dto.MessageRequest;
+import com.tiba.whatsapp.dto.MessageResponse;
+import com.tiba.whatsapp.mapper.MessageMapper;
 import com.tiba.whatsapp.model.Chat;
 import com.tiba.whatsapp.model.Message;
 import com.tiba.whatsapp.model.User;
@@ -11,6 +13,9 @@ import com.tiba.whatsapp.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
@@ -18,6 +23,7 @@ public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final ChatService chatService;
     private final ChatRepository chatRepository;
+    private final MessageMapper messageMapper;
 
     @Override
     public Long sendMessage(MessageRequest messageRequest) {
@@ -38,5 +44,12 @@ public class MessageServiceImpl implements MessageService {
                 .build();
 
         return messageRepository.save(message).getId();
+    }
+
+    @Override
+    public List<MessageResponse> getMessagesByChatId(Long chatId) {
+        List<Message> messageList = messageRepository.findAllByChat_Id(chatId);
+        List<MessageResponse> messageResponseList = messageList.stream().map(messageMapper::toResponse).toList();
+        return messageResponseList;
     }
 }
