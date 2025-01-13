@@ -27,3 +27,7 @@ application:
   file:
     uploads:
       media-output-path: ./uploads
+
+app:
+  cors:
+    allowed-origins: http://localhost:4200
